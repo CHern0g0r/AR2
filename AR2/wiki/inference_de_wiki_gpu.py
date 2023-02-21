@@ -125,7 +125,7 @@ def load_model(args):
     if args.local_rank not in [-1, 0]:
         torch.distributed.barrier()  # Make sure only the first process in distributed training will download model & vocab
 
-    args.model_type = args.model_type.lower()
+    # args.model_type = args.model_type.lower()
 
     if is_first_worker():
         # Create output directory if needed
@@ -307,7 +307,7 @@ def get_passage_embedding(args, passages, model, tokenizer):
             pickle_path = os.path.join(args.output_dir, "{1}_data_obj_{0}.pb".format(str(i), 'passage_embedding'))
             with open(pickle_path, 'rb') as handle:
                 b = pickle.load(handle)
-                passage_embedding_list.append(b)
+                passage_embedding_list.append(b.astype(np.float16))
         for i in range(args.world_size):  # TODO: dynamically find the max instead of HardCode
             pickle_path = os.path.join(args.output_dir, "{1}_data_obj_{0}.pb".format(str(i), 'passage_embedding_id'))
             with open(pickle_path, 'rb') as handle:
@@ -390,16 +390,16 @@ def generate_new_embeddings(args, tokenizer, model):
         faiss.omp_set_num_threads(args.thread_num)
         cpu_index = faiss.IndexFlatIP(dim)
 
-        co = faiss.GpuMultipleClonerOptions()
-        co.shard = True
-        co.useFloat16 = True
-        gpu_index_flat = faiss.index_cpu_to_all_gpus(  # build the index
-            cpu_index,
-            co=co
-        )
-        gpu_index_flat.add(passage_embedding.astype(np.float32))
-        cpu_index = gpu_index_flat
-        # cpu_index.add(passage_embedding.astype(np.float32))
+        # co = faiss.GpuMultipleClonerOptions()
+        # co.shard = True
+        # co.useFloat16 = True
+        # gpu_index_flat = faiss.index_cpu_to_all_gpus(  # build the index
+        #     cpu_index,
+        #     co=co
+        # )
+        # gpu_index_flat.add(passage_embedding.astype(np.float32))
+        # cpu_index = gpu_index_flat
+        cpu_index.add(passage_embedding.astype(np.float32))
         # output_path = os.path.join(args.output_dir, 'faiss.index')
         # faiss.write_index(cpu_index, output_path)
         logger.info("***** Done ANN Index *****")
