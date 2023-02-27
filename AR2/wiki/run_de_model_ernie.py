@@ -241,7 +241,7 @@ def caculate_cont_loss(args, local_q_vector, local_ctx_vectors, local_positive_i
     return loss, is_correct
 
 def sum_main(x, opt):
-    if opt.world_size > 1:
+    if hasattr(opt, 'world_size') and opt.world_size > 1:
         dist.reduce(x, 0, op=dist.ReduceOp.SUM)
     return x
 def evaluate_dev(args, model, tokenizer):
