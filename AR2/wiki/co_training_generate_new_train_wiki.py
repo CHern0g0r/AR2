@@ -267,7 +267,7 @@ class RenewTools:
                 pickle_path = os.path.join(self.temp_dir, "{1}_data_obj_{0}.pb".format(str(i), 'psg_embed'))
                 with open(pickle_path, 'rb') as handle:
                     b = pickle.load(handle)
-                    passage_embedding_list.append(b)
+                    passage_embedding_list.append(b.astype(np.float16))
             logger.info('load_passage_id_begin')
             for i in tqdm(range(args.world_size)):  # TODO: dynamically find the max instead of HardCode
                 pickle_path = os.path.join(self.temp_dir, "{1}_data_obj_{0}.pb".format(str(i), 'psg_embed_id'))
