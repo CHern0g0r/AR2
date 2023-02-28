@@ -29,6 +29,7 @@ try:
 except ImportError:
     from tensorboardX import SummaryWriter
 import pandas as pd
+from pathlib import Path
 
 logger = logging.getLogger(__name__)
 from utils.util import (
@@ -462,6 +463,7 @@ def main():
     set_env(args)
     basic_format = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
     formatter = logging.Formatter(basic_format)
+    Path(args.output_dir).mkdir(parents=True, exist_ok=True)
     log_path = os.path.join(args.output_dir, 'log.txt')
     # sh = logging.StreamHandler()
     handler = logging.FileHandler(log_path, 'a', 'utf-8')
