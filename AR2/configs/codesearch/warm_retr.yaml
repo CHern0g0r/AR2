@@ -1,0 +1,17 @@
+runde:
+    model_type: "/srv/nfs/VESO/models/ernie-2.0-base-en"
+    origin_data_dir: $DATA_DIR/biencoder-trivia-train.json
+    origin_data_dir_dev: $DATA_DIR/biencoder-trivia-dev.json
+    model_name_or_path_ict: $Model_After_ICT
+    max_seq_length: 256
+    per_gpu_train_batch_size: 16
+    gradient_accumulation_steps: 1
+    learning_rate: 2e-5
+    output_dir: ""
+    warmup_steps: 4000
+    logging_steps: 100
+    save_steps: 1000
+    max_steps: 40000
+    log_dir: ""
+    fp16: True
+    number_neg: 1
